@@ -6,8 +6,8 @@ Using functional programming techniques in Scala, please develop a backend appli
 
 ```
 type News {
-  title: String,
-  link: String,
+  title: String!,
+  link: String!,
 }
 
 type Query {
