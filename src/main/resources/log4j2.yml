@@ -1,0 +1,38 @@
+Configuration:
+  status: warn
+  name: NYTLoggingConfig
+  thresholdFilter:
+    level: debug
+  appenders:
+    Console:
+      name: CONSOLE
+      target: SYSTEM_OUT
+      PatternLayout:
+        Pattern: "%d{yyyy-MM-dd HH:mm:ss} %-5p %c{1}:%L - %X - %m%n"
+
+  Loggers:
+    logger:
+      - name: ru.krylovd
+        level: debug
+        additivity: false
+        AppenderRef:
+          ref: CONSOLE
+      - name: datadog
+        level: warn
+        additivity: false
+        AppenderRef:
+          ref: CONSOLE
+      - name: org.http4s
+        level: warn
+        additivity: false
+        AppenderRef:
+          ref: CONSOLE
+      - name: fs2
+        level: info
+        additivity: false
+        AppenderRef:
+          ref: CONSOLE
+    Root:
+      level: warn
+      AppenderRef:
+        ref: CONSOLE

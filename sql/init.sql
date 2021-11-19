@@ -1,0 +1,6 @@
+CREATE SCHEMA IF NOT EXISTS nyt;
+
+CREATE TABLE nyt.headline (
+    link VARCHAR PRIMARY KEY,
+    title VARCHAR NOT NULL
+);
