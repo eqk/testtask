@@ -16,7 +16,8 @@ trait NewsRepo[F[_]] {
 
 object NewsRepo {
 
-  def fromTransactor[F[_]: Sync: Logger](xa: Transactor[F]): NewsRepo[F] = new NewsRepo[F] {
+  def fromTransactor[F[_]: Sync: Logger](xa: Transactor[F]): NewsRepo[F] =
+    new NewsRepo[F] {
       val dc = new DoobieContext.Postgres(Literal); import dc._
 
       def all: F[List[Headline]] = {

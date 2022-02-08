@@ -8,8 +8,8 @@ import doobie.hikari._
 import doobie.util.ExecutionContexts
 import org.http4s.blaze.server.BlazeServerBuilder
 import org.http4s.server.Server
-import org.typelevel.log4cats.{Logger, SelfAwareStructuredLogger}
 import org.typelevel.log4cats.slf4j.Slf4jLogger
+import org.typelevel.log4cats.{Logger, SelfAwareStructuredLogger}
 import ru.krylovd.news.algebra.{DispatcherProvider, Scraper, ScraperService}
 import ru.krylovd.news.config.{AppConfig, DatabaseConfig, ScrapeConfig}
 import ru.krylovd.news.http.{GraphQLRoutes, PlaygroundRoutes}
@@ -69,8 +69,7 @@ trait Tasks {
       implicit0(dispatcher: DispatcherProvider[F]) <- Dispatcher[F].map(DispatcherProvider(_))
       srv = server[F](repo)
         .use(_ =>
-          Async[F]
-            .never
+          Async[F].never
             .as(ExitCode.Error) <* logger.info("Server stopped")
         )
       scraper = scrapper[F](repo, cfg.scrape).as(ExitCode.Error)

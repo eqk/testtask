@@ -1,7 +1,6 @@
 package ru.krylovd.news.sangria.schema
 
 import cats.effect._
-import cats.effect.std.Dispatcher
 import ru.krylovd.news.algebra.DispatcherProvider
 import ru.krylovd.news.repo.NewsRepo
 import sangria.schema._

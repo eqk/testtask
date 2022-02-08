@@ -15,19 +15,20 @@ trait ScraperService[F[_]] {
 object ScraperService {
 
   def apply[F[_]: Async: Logger](
-    scraper: Scraper[F],
-    repo: NewsRepo[F],
-    interval: Option[FiniteDuration]
-  ): ScraperService[F] = new ScraperService[F] {
+      scraper: Scraper[F],
+      repo: NewsRepo[F],
+      interval: Option[FiniteDuration]
+  ): ScraperService[F] =
+    new ScraperService[F] {
 
-    def scrape: F[Unit] =
-      for {
-        headlines <- scraper.headlines()
-        _ <- repo.update(headlines)
-        _ <- interval match {
-          case Some(i) => Temporal[F].sleep(i) *> scrape
-          case None    => Logger[F].info("Scrapper stopped")
-        }
-      } yield ()
-  }
+      def scrape: F[Unit] =
+        for {
+          headlines <- scraper.headlines()
+          _ <- repo.update(headlines)
+          _ <- interval match {
+            case Some(i) => Temporal[F].sleep(i) *> scrape
+            case None    => Logger[F].info("Scrapper stopped")
+          }
+        } yield ()
+    }
 }

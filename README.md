@@ -1,3 +1,10 @@
+### Run
+
+```
+docker-compose up
+sbt run
+```
+
 ### Instructions
 
 This test will be used to evaluate your skills as a functional programmer, as well as code organization and cleanliness and test coverage.
@@ -44,9 +51,6 @@ Abstract the effect and instantiate the program using two IO/Task implementation
 functional state management.
 
 _This test will be used to evaluate your skills as a functional programmer, as well as code organization and cleanliness and test coverage._
-
-### Questions?
-Send an email to coding-test@avantstay.com
 
 ___
 

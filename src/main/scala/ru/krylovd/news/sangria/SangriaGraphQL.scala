@@ -60,48 +60,54 @@ object SangriaGraphQL {
     )
 
   def apply[F[_]: Async, A](
-        schema: Schema[A, Unit],
-        userContext: F[A]
-    ): GraphQL[F] =
-      new GraphQL[F] {
+      schema: Schema[A, Unit],
+      userContext: F[A]
+  ): GraphQL[F] =
+    new GraphQL[F] {
 
-        def query(request: GraphQLRequest): F[Either[Json, Json]] =
-          QueryParser.parse(request.query) match {
-            case Success(ast) =>
-              execute(schema, userContext, ast, request.operationName, request.variables)
-            case Failure(e @ SyntaxError(_, _, _)) => fail(formatSyntaxError(e))
-            case Failure(e) => fail(formatThrowable(e))
-          }
+      def query(request: GraphQLRequest): F[Either[Json, Json]] =
+        QueryParser.parse(request.query) match {
+          case Success(ast) =>
+            execute(schema, userContext, ast, request.operationName, request.variables)
+          case Failure(e @ SyntaxError(_, _, _)) => fail(formatSyntaxError(e))
+          case Failure(e)                        => fail(formatThrowable(e))
+        }
 
-        def fail(j: Json): F[Either[Json, Json]] = Async[F].pure(j.asLeft)
+      def fail(j: Json): F[Either[Json, Json]] = Async[F].pure(j.asLeft)
 
-        def execute(
-            schema: Schema[A, Unit],
-            userContext: F[A],
-            query: Document,
-            operationName: Option[String],
-            variables: JsonObject
-        ): F[Either[Json, Json]] =
-          for {
-            ctx <- userContext
-            implicit0(ec: ExecutionContext) <- Async[F].executionContext
-            result <- Async[F].fromFuture(Executor
-              .execute(
-                schema = schema,
-                queryAst = query,
-                userContext = ctx,
-                variables = Json.fromJsonObject(variables),
-                operationName = operationName,
-                exceptionHandler = ExceptionHandler {
-                  case (_, e) ⇒ HandledException(e.getMessage)
-                }
-              ).pure).attempt
-          } yield result match {
-            case Right(json)               => json.asRight
-            case Left(err: WithViolations) => formatWithViolations(err).asLeft
-            case Left(err)                 => formatThrowable(err).asLeft
-          }
+      def execute(
+          schema: Schema[A, Unit],
+          userContext: F[A],
+          query: Document,
+          operationName: Option[String],
+          variables: JsonObject
+      ): F[Either[Json, Json]] =
+        for {
+          ctx <- userContext
+          implicit0(ec: ExecutionContext) <- Async[F].executionContext
+          result <-
+            Async[F]
+              .fromFuture(
+                Executor
+                  .execute(
+                    schema = schema,
+                    queryAst = query,
+                    userContext = ctx,
+                    variables = Json.fromJsonObject(variables),
+                    operationName = operationName,
+                    exceptionHandler = ExceptionHandler {
+                      case (_, e) ⇒ HandledException(e.getMessage)
+                    }
+                  )
+                  .pure
+              )
+              .attempt
+        } yield result match {
+          case Right(json)               => json.asRight
+          case Left(err: WithViolations) => formatWithViolations(err).asLeft
+          case Left(err)                 => formatThrowable(err).asLeft
+        }
 
-      }
+    }
 
 }

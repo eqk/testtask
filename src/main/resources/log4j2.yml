@@ -1,6 +1,6 @@
 Configuration:
   status: warn
-  name: NYTLoggingConfig
+  name: NewsLoggingConfig
   thresholdFilter:
     level: debug
   appenders:

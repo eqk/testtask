@@ -1,17 +1,17 @@
 package ru.krylovd.news.config
 
-import ciris._
 import cats.implicits._
+import ciris._
 
 case class DatabaseConfig(
-  url: String,
-  user: String,
-  password: String,
-  poolSize: Int
+    url: String,
+    user: String,
+    password: String,
+    poolSize: Int
 )
 
 object DatabaseConfig {
-  val defaultJdbcUrl = "jdbc:postgresql://127.0.0.1:5432/postgres?currentSchema=nyt"
+  val defaultJdbcUrl = "jdbc:postgresql://127.0.0.1:5432/postgres?currentSchema=public"
   def parser[F[_]]: ConfigValue[F, DatabaseConfig] =
     (
       env("DB_URL").as[String].default(defaultJdbcUrl),
